@@ -39,8 +39,9 @@ RUN apk update
 RUN rm -rf /var/cache/apk/* && \
     rm -rf /tmp/*
 
-RUN mkdir -p /var/www
+RUN mkdir -p /var/www && mkdir -p /etc/ssl_crt
 
+COPY laravel_pusher /var/www/html
 RUN groupmod -g 1000 www-data && \
     usermod -u 1000 www-data
 
