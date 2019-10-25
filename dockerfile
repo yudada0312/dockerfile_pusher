@@ -42,12 +42,14 @@ RUN rm -rf /var/cache/apk/* && \
 RUN mkdir -p /var/www && mkdir -p /etc/ssl_crt
 
 COPY laravel_pusher /var/www/html
-RUN groupmod -g 1000 www-data && \
-    usermod -u 1000 www-data
-
-USER www-data
+# RUN groupmod -g 1000 www-data && \
+#     usermod -u 1000 www-data
+#
+# USER www-data
 
 WORKDIR /var/www/html
+
+RUN chmod -R 777 storage/ && chmod -R 777 bootstrap/cache && chmod 777 bootstrap/ && mkdir -m 777 -p storage/logs/sql
 
 EXPOSE 6001
 
