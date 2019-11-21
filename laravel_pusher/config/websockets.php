@@ -1,15 +1,43 @@
 <?php
-
 use BeyondCode\LaravelWebSockets\Dashboard\Http\Middleware\Authorize;
+
+$websocket_apps = include('websocket_apps.php');
+
+$platform_name = env('PLATFORM_NAME');
+
+$apps = [];
+foreach($websocket_apps as $app){
+    //如有設定 PLATFORM_NAME , $apps只能定義一組設定
+    if( !empty($platform_name) && $app['name']!=$platform_name) {
+        continue;
+    }
+    $ext_prem = ['path' => '',
+                'capacity' => null,
+                'enable_client_messages' => false,
+                'enable_statistics' => true,
+                'force_tls' => false];
+    $apps[] = array_merge($ext_prem, $app);
+
+}
+
+$app = collect($apps)->firstWhere('name', $platform_name);
+
+if($app['force_tls']){
+    $ssl_local_cert="/etc/ssl_crt/server.crt";
+    $ssl_local_pk="/etc/ssl_crt/server.key";
+}else{
+    $ssl_local_cert=null;
+    $ssl_local_pk=null;
+}
 
 return [
 
     /*
      * Set a custom dashboard configuration
      */
-    'dashboard' => [
-        'port' => env('LARAVEL_WEBSOCKETS_PORT', 6001),
-    ],
+//    'dashboard' => [
+//        'port' => env('LARAVEL_WEBSOCKETS_PORT', 6001),
+//    ],
 
     /*
      * This package comes with multi tenancy out of the box. Here you can
@@ -21,18 +49,7 @@ return [
      * Optionally you can disable client events so clients cannot send
      * messages to each other via the webSockets.
      */
-    'apps' => [
-        [
-            'id' => env('PUSHER_APP_ID'),
-            'name' => env('APP_NAME'),
-            'key' => env('PUSHER_APP_KEY'),
-            'secret' => env('PUSHER_APP_SECRET'),
-            'path' => env('PUSHER_APP_PATH'),
-            'capacity' => null,
-            'enable_client_messages' => false,
-            'enable_statistics' => true,
-        ],
-    ],
+    'apps' => $apps,
 
     /*
      * This class is responsible for finding the apps. The default provider
@@ -110,13 +127,13 @@ return [
          * certificate chain of issuers. The private key also may be contained
          * in a separate file specified by local_pk.
          */
-        'local_cert' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT', null),
+        'local_cert' => $ssl_local_cert,
 
         /*
          * Path to local private key file on filesystem in case of separate files for
          * certificate (local_cert) and private key.
          */
-        'local_pk' => env('LARAVEL_WEBSOCKETS_SSL_LOCAL_PK', null),
+        'local_pk' => $ssl_local_pk,
 
         /*
          * Passphrase for your local_cert file.

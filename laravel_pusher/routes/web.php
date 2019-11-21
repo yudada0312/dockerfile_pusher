@@ -11,6 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'ShowCustomDashboard@index');
+Route::get('/laravel-websockets', function () {
+    return redirect('/');
+    //return view('welcome');
 });
