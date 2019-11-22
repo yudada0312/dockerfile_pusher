@@ -12,6 +12,7 @@
 */
 
 Route::get('/', 'ShowCustomDashboard@index');
+Route::post('/laravel-websockets/custom_event', 'ShowCustomDashboard@event');
 Route::get('/laravel-websockets', function () {
     return redirect('/');
     //return view('welcome');

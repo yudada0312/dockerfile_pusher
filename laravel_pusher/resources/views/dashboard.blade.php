@@ -251,11 +251,13 @@
             },
 
             sendEvent() {
-                $.post('/{{ $path }}/event', {
+                $.post('/{{ $path }}/custom_event', {
                     _token: '{{ csrf_token() }}',
                     key: this.app.key,
                     secret: this.app.secret,
                     appId: this.app.id,
+                    host: this.app.host,
+                    force_tls: this.app.force_tls,
                     channel: this.form.channel,
                     event: this.form.event,
                     data: this.form.data,
