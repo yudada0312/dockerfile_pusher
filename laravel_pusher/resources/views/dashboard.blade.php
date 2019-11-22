@@ -88,7 +88,6 @@
     </div>
 </div>
 <script>
-console.log({!! json_encode($apps) !!})
     var vue = new Vue({
         el: '#app',
         data: {
@@ -117,22 +116,6 @@ console.log({!! json_encode($apps) !!})
 
         methods: {
             connect() {
-                console.log({
-                    wsHost: window.location.hostname,
-                    wsPort: this.port === null ? 6001 : this.port,
-                    wssPort: this.port === null ? 6001 : this.port,
-                    wsPath: this.app.path === null ? '' : this.app.path,
-                    disableStats: true,
-                    authEndpoint: '/{{ $path }}/auth',
-                    auth: {
-                        headers: {
-                            'X-CSRF-Token': "{{ csrf_token() }}",
-                            'X-App-ID': this.app.id
-                        }
-                    },
-                    enabledTransports: ['ws', 'flash'],
-                    forceTLS: this.app.force_tls
-                })
                 this.pusher = new Pusher(this.app.key, {
                     wsHost: window.location.hostname,
                     wsPort: this.port === null ? 6001 : this.port,
